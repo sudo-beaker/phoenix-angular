@@ -1,6 +1,8 @@
 name: publish-ghcr.yml
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'   # or adjust trigger as you like
 
@@ -33,4 +35,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/my-image:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository_owner }}/my-image:sha-${{ github.sha }}
+            ${{ startsWith(github.ref, 'refs/tags/v') && format('ghcr.io/{0}/my-image:{1}', github.repository_owner, github.ref_name) || '' }}
+            ${{ github.ref == 'refs/heads/main' && format('ghcr.io/{0}/my-image:latest', github.repository_owner) || '' }}
