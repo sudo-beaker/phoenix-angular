@@ -37,5 +37,28 @@ jobs:
           context: .
           push: true
           tags: |
-            coycatz/phoenix-angular:v1
-            coycatz/phoenix-angular:sha-${{ github.sha }}
+            coycatz/phoenix-angular:latest
+            coycatz/phoenix-angular:${{ steps.vars.outputs.sha_short }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+    steps:
+      - name: Pull latest image
+        run: docker pull coycatz/phoenix-angular:latest
+
+      - name: Stop and remove existing container
+        run: |
+          docker stop phoenix-app || true
+          docker rm phoenix-app || true
+
+      - name: Run new container
+        run: |
+          docker run -d \
+            --name phoenix-app \
+            --restart always \
+            -p 80:80 \
+            coycatz/phoenix-angular:latest
+
+      - name: Cleanup old images
+        run: docker image prune -f
