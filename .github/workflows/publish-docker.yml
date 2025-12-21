@@ -37,7 +37,6 @@ jobs:
           context: .
           push: true
           tags: coycatz/phoenix-angular:latest
- }
   deploy:
     needs: build-and-push
     runs-on: self-hosted
