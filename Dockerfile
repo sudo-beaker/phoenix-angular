@@ -1,6 +1,14 @@
 # Stage 1: Build the Angular application
 FROM node:alpine AS build
 
+# Declare the arguments
+ARG API_URL
+ARG APP_VERSION
+
+# Set them as ENV so the application can use them during the build (e.g., Angular build)
+ENV API_URL=$API_URL
+ENV APP_VERSION=$APP_VERSION
+
 WORKDIR /app
 
 # Copy package files and install dependencies
